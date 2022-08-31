@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Spinner } from "react-bootstrap";
 
 
@@ -11,14 +11,14 @@ export default function Posts() {
   // TODO: add a side effect function to request posts here
   useEffect(() => {
     (async () => {
-      const response = await fetch(BASE_API_URL + 'api/feed');
+      const response = await fetch(BASE_API_URL + '/api/feed');
       if (response.ok) {
         const results = await response.json();
         setPosts(results.data);
       }else {
         setPosts(null);
       }
-    });
+    })();
   }, []);
   
   
@@ -31,7 +31,17 @@ export default function Posts() {
         {posts === null ?
         <p>Could not retrive blog posts.</p> :
         <>
-
+          {posts.length === 0 ?
+          <p>There are no blog posts. </p> :
+          posts.map(post => {
+            return (
+              <p key={post.id}>
+                <b>{post.author.username}</b> &mdash; {post.timestamp}
+                <br />
+                {post.text}
+              </p>
+            )
+          })}
         </>}
       </>  
       }
